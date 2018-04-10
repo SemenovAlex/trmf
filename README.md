@@ -19,9 +19,27 @@ By doing that we will find latent embedding vectors for timeseries and latent te
 One can further use this embeddings to forecast new data or to impute missings.
 
 ## 2. Package description
+Package consists of:
+- trmf : time series modelling
+- synthetic_data : data generation for experiments
 
-## 3. Examples
+## 3. Experiments
 
-## 4. Experiments
+In workbook.ipynb you can find some experiments on the package:
 
+1) Testing convergence of model on synthetic data
+2) Testing stability of model to overfitting on synthetic data
+3) ... (in progress)
 
+## 4. Plan
+
+1) Article analysis // done
+2) Synthetic Data Generator // done
+3) Basic realization of trmf with gradient descent // done
+4) Documentation and help functions // todo
+5) Experiments on synthetic data // done
+6) Rolling CV functionality // todo
+7) Experiments on electricity data (vs autoregressive model) // todo
+8) CryptoCurrency forecasting (vs autoregressive model) // todo
+9) Missing data handling // todo
+10) Missing data imputation experiments // todo
