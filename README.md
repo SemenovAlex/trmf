@@ -36,7 +36,7 @@ In workbook.ipynb you can find some experiments on the package:
 1) Article analysis // done
 2) Synthetic Data Generator // done
 3) Basic realization of trmf with gradient descent // done
-4) Documentation and help functions // todo
+4) Documentation and help functions // done
 5) Experiments on synthetic data // done
 6) Rolling CV functionality // todo
 7) Experiments on electricity data (vs autoregressive model) // todo
