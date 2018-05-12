@@ -28,33 +28,35 @@ additionaly:
 - Forecast : simple models for testing experiments
 - RollingCV : rolling cross-validation implementation
 
+For usage information use help(trmf)
+
 ## 3. Experiments
 
 In experiments_[something].ipynb you can find some experiments on the package:
 
 1) experiments_synthetic.ipynb: testing trmf model against other simple model on synthetic data
 
-** Lags = {1} **
+**Lags = {1} **
 
-|| h=1 | h=5 | h=10 | h=20 |
+|horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|
 | Naive | **0.105**/**0.138** | **0.151**/**0.2** | **0.175**/**0.23** | 0.38/**0.477** |
 | Mean | 1.0/1.136 | 1.0/1.114 | 1.0/1.094 | 1.0/1.079 |
 | AutoRegression | 0.107/0.142 | 0.16/0.215 | 0.2/0.275 | 0.42/0.536 |
 | TRMF | 0.172/0.218 | 0.155/0.227 | 0.197/0.261 | **0.368**/0.48 |
 
-** Lags = {1,7} **
+**Lags = {1,7} **
 
-|| h=1 | h=5 | h=10 | h=20 |
+|horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|
 | Naive | 0.82/0.956 | 1.072/1.292 | 0.893/1.119 | 1.051/1.303 |
 | Mean | 1.0/1.176 | 1.0/1.219 | 1.0/1.236 | 1.0/1.259 |
 | AutoRegression | **0.503**/**0.581** | **0.496**/**0.599** | 0.572/0.717 | **0.86/1.107** |
 | TRMF | 0.515/0.612 | 0.498/0.603 | **0.565/0.704** | 0.87/1.117 |
 
-** Lags = {1,7,14,28} **
+**Lags = {1,7,14,28} **
 
-| h=1 | h=5 | h=10 | h=20 |
+|horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|
 | Naive | 1.012/1.191 | 0.97/1.18 | 0.968/1.202 | 0.917/1.162 |
 | Mean | 1.0/1.164 | 1.0/1.218 | 1.0/1.206 | 1.0/1.197 |
