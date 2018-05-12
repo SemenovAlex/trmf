@@ -36,7 +36,7 @@ In experiments_[something].ipynb you can find some experiments on the package:
 
 1) experiments_synthetic.ipynb: testing trmf model against other simple model on synthetic data
 
-**Lags = {1} **
+**Lags = {1}**
 
 |horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|------|
@@ -45,7 +45,7 @@ In experiments_[something].ipynb you can find some experiments on the package:
 | AutoRegression | 0.107/0.142 | 0.16/0.215 | 0.2/0.275 | 0.42/0.536 |
 | TRMF | 0.172/0.218 | 0.155/0.227 | 0.197/0.261 | **0.368**/0.48 |
 
-**Lags = {1,7} **
+**Lags = {1,7}**
 
 |horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|------|
@@ -54,7 +54,7 @@ In experiments_[something].ipynb you can find some experiments on the package:
 | AutoRegression | **0.503**/**0.581** | **0.496**/**0.599** | 0.572/0.717 | **0.86/1.107** |
 | TRMF | 0.515/0.612 | 0.498/0.603 | **0.565/0.704** | 0.87/1.117 |
 
-**Lags = {1,7,14,28} **
+**Lags = {1,7,14,28}**
 
 |horizon| 1 | 5 | 10 | 20 |
 |------|------|------|------|------|
@@ -65,8 +65,22 @@ In experiments_[something].ipynb you can find some experiments on the package:
 
 2) experiments_electricity.ipynb: testing trmf model against other simple model on electricity data
 
+| horizon | 1 | 5 | 10 | 20 |
+|------|------|------|------|------|
+| Naive | **0.344/0.5** | 0.688/0.951 | 1.091/1.429 | 1.363/1.73 |
+| Mean | 1.0/1.19 | 1.0/1.201 | 1.0/1.204 | 1.0/1.188 |
+| AutoRegression | 0.427/0.557 | **0.612/0.831** | **0.627/0.876** | **0.58**/0.802 |
+| TRMF | 0.639/0.828 | 0.727/0.95 | 0.681/0.936 | 0.584/**0.799** |
+
 
 3) experiments_crypto.ipynb: testing trmf model against other simple model on crypto-currency data
+
+| horizon | 1 | 5 | 10 | 20 |
+|------|------|------|------|------|
+| Naive | **0.158/0.36** | **0.228/0.574** | **0.29/0.644** | **0.347/0.842** |
+| Mean | 1.0/1.293 | 1.0/1.265 | 1.0/1.24 | 1.0/1.322 |
+| AutoRegression | 0.168/0.368 | 0.258/0.6 | 0.369/0.792 | 0.528/1.309 |
+| TRMF | 0.233/0.437 | 0.273/0.619 | 0.332/0.668 | 0.429/0.957 |
 
 
 4) experiments_missings.ipynb: testing trmf model against other simple model on missing data imputation
