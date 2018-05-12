@@ -24,27 +24,51 @@ Package consists of:
 - synthetic_data : data generation for experiments
 
 additionaly:
-- AR : simple autoregressive model for testing experiments
+- Metrics : metrics for experiments and validation
+- Forecast : simple models for testing experiments
 - RollingCV : rolling cross-validation implementation
 
 ## 3. Experiments
 
-In experiments_[something].ipynb you can find some experiments of the package:
+In experiments_[something].ipynb you can find some experiments on the package:
 
-1) experiments_synthetic.ipynb: testing trmf model against autoregressive model on synthetic data
-2) experiments_electricity.ipynb: testing trmf model against autoregressive model on electricity data
-3) experiments_crypto.ipynb: testing trmf model against autoregressive model on crypto-currency data
-4) experiments_imputation.ipynb: in_progress...
+1) experiments_synthetic.ipynb: testing trmf model against other simple model on synthetic data
 
-## 4. Plan
+
+2) experiments_electricity.ipynb: testing trmf model against other simple model on electricity data
+
+
+3) experiments_crypto.ipynb: testing trmf model against other simple model on crypto-currency data
+
+
+4) experiments_missings.ipynb: testing trmf model against other simple model on missing data imputation
+
+| mp=5% | mp=10% | mp=25% |
+|------|------|------|
+| Naive | 0.367/0.574 | 0.373/0.584 | 0.391/0.613 |
+| Mean | 129.506/150.367 | 108.291/125.712 | 89.242/103.586 |
+| TRMF | **0.359/0.516** | **0.36/0.519** | **0.361/0.52** |
+
+
+## 4. Conclusion
+
+1) TRMF model needs additional regularization on matrix W (sum of the row elements must be close to one). Otherwise, predictions for long periods will be unstable;
+
+2) Every timeseries is better to be normalized before using TRMF;
+
+3) TRMF is good on data imputation;
+
+4) TRMF is good when data has missings.
+
+## 5. Plan
 
 1) Article analysis // done
 2) Synthetic Data Generator // done
 3) Basic realization of trmf with gradient descent // done
 4) Documentation and help functions // done
-5) Experiments on synthetic data // done
+5) Experiments on synthetic data (vs other models) // done
 6) Rolling CV functionality // done
-7) Experiments on electricity data (vs autoregressive model) // done
-8) CryptoCurrency forecasting (vs autoregressive model) // todo
-9) Missing data handling // todo
-10) Missing data imputation experiments // todo
+7) Experiments on electricity data (vs other models) // done
+8) CryptoCurrency forecasting (vs other models) // done
+9) Missing data handling // done
+10) Missing data imputation experiments (vs other models) // done
