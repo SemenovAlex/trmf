@@ -46,7 +46,7 @@ In experiments_[something].ipynb you can find some experiments on the package:
 4) experiments_missings.ipynb: testing trmf model against other simple model on missing data imputation
 
 | missings | 5% | 10% | 25% |
-|------|------|------|
+|----------|----|-----|-----|
 | Naive | 0.367/0.574 | 0.373/0.584 | 0.391/0.613 |
 | Mean | 129.506/150.367 | 108.291/125.712 | 89.242/103.586 |
 | TRMF | **0.359/0.516** | **0.36/0.519** | **0.361/0.52** |
