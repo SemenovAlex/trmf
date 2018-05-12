@@ -7,7 +7,6 @@ Temporal Regularized Matrix Factorization
 import numpy as np
 
 
-
 class trmf:
     """Temporal Regularized Matrix Factorization.
 
@@ -36,6 +35,19 @@ class trmf:
     eta : float
         Regularization parameter used for X when undercovering autoregressive dependencies.
 
+    max_iter : int
+        Number of iterations of updating matrices F, X and W.
+
+    F_step : float
+        Step of gradient descent when updating matrix F.
+
+    X_step : float
+        Step of gradient descent when updating matrix X.
+
+    W_step : float
+        Step of gradient descent when updating matrix W.
+
+
     Attributes
     ----------
 
@@ -49,7 +61,8 @@ class trmf:
         Matrix of autoregressive coefficients.
     """
 
-    def __init__(self, lags, K, lambda_f, lambda_x, lambda_w, alpha, eta):
+    def __init__(self, lags, K, lambda_f, lambda_x, lambda_w, alpha, eta, max_iter=1000, 
+                 F_step=0.0001, X_step=0.0001, W_step=0.0001):
         self.lags = lags
         self.L = len(lags)
         self.K = K
@@ -58,14 +71,17 @@ class trmf:
         self.lambda_w = lambda_w
         self.alpha = alpha
         self.eta = eta
+        self.max_iter = max_iter
+        self.F_step = F_step
+        self.X_step = X_step
+        self.W_step = W_step
         
         self.W = None
         self.F = None
         self.X = None
 
 
-    def fit(self, data, max_iter=10, resume=False,
-            F_step=0.0001, F_max_iter=1, X_step=0.0001, X_max_iter=1, W_step=0.0001, W_max_iter=1):
+    def fit(self, train, resume=False):
         """Fit the TRMF model according to the given training data.
 
         Model fits through sequential updating three matrices:
@@ -77,29 +93,8 @@ class trmf:
 
         Parameters
         ----------
-        data : ndarray, shape (n_timeseries, n_timepoints)
+        train : ndarray, shape (n_timeseries, n_timepoints)
             Training data.
-
-        F_step : float
-            Step of gradient descent when updating matrix F.
-
-        F_max_iter : int
-            Number of gradient steps to be made to update F.
-
-        X_step : float
-            Step of gradient descent when updating matrix X.
-
-        X_max_iter : int
-            Number of gradient steps to be made to update X.
-
-        W_step : float
-            Step of gradient descent when updating matrix W.
-
-        W_max_iter : int
-            Number of gradient steps to be made to update W.
-
-        n_epoch : int
-            Number of iterations of updating matrices F, X and W.
 
         resume : bool
             Used to continue fitting.
@@ -111,27 +106,30 @@ class trmf:
         """
 
         if not resume:
-            self.Y = data
-            self.N, self.T = data.shape
+            self.Y = train
+            mask = np.array((~np.isnan(self.Y)).astype(int))
+            self.mask = mask
+            self.Y[self.mask == 0] = 0.
+            self.N, self.T = self.Y.shape
             self.W = np.random.randn(self.K, self.L) / self.L
             self.F = np.random.randn(self.N, self.K)
             self.X = np.random.randn(self.K, self.T)
 
-        for _ in range(max_iter):
-            self._update_F(step=F_step, n_iter=F_max_iter)
-            self._update_X(step=X_step, n_iter=X_max_iter)
-            self._update_W(step=W_step, n_iter=W_max_iter)
+        for _ in range(self.max_iter):
+            self._update_F(step=self.F_step)
+            self._update_X(step=self.X_step)
+            self._update_W(step=self.W_step)
 
 
-    def predict(self, T):
-        """Predict each of timeseries T timepoints ahead.
+    def predict(self, h):
+        """Predict each of timeseries h timepoints ahead.
 
         Model evaluates matrix X with the help of matrix W,
         then it evaluates prediction by multiplying it by F.
 
         Parameters
         ----------
-        T : int
+        h : int
             Number of timepoints to forecast.
 
         Returns
@@ -140,36 +138,53 @@ class trmf:
             Predictions.
         """
 
-        X_preds = self._predict_X(T)
+        X_preds = self._predict_X(h)
         return np.dot(self.F, X_preds)
 
 
-    def _predict_X(self, T):
-        """Predict X T timepoints ahead.
+    def _predict_X(self, h):
+        """Predict X h timepoints ahead.
 
         Evaluates matrix X with the help of matrix W.
 
         Parameters
         ----------
-        T : int
+        h : int
             Number of timepoints to forecast.
 
         Returns
         -------
-        X_preds : ndarray, shape (self.K, T)
+        X_preds : ndarray, shape (self.K, h)
             Predictions of timepoints latent embeddings.
         """
 
-        X_preds = np.zeros((self.K, T))
+        X_preds = np.zeros((self.K, h))
         X_adjusted = np.hstack([self.X, X_preds])
-        for t in range(self.T, self.T + T):
+        for t in range(self.T, self.T + h):
             for l in range(self.L):
                 lag = self.lags[l]
                 X_adjusted[:, t] += X_adjusted[:, t - lag] * self.W[:, l]
         return X_adjusted[:, self.T:]
 
+    def impute_missings(self):
+        """Impute each missing element in timeseries.
 
-    def _update_F(self, step, n_iter):
+        Model uses matrix X and F to get all missing elements.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        data : ndarray, shape (n_timeseries, T)
+            Predictions.
+        """
+        data = self.Y
+        data[self.mask == 0] = np.dot(self.F, self.X)[self.mask == 0]
+        return data
+
+
+    def _update_F(self, step, n_iter=1):
         """Gradient descent of matrix F.
 
         n_iter steps of gradient descent of matrix F.
@@ -192,7 +207,7 @@ class trmf:
             self.F -= step * self._grad_F()
 
 
-    def _update_X(self, step, n_iter):
+    def _update_X(self, step, n_iter=1):
         """Gradient descent of matrix X.
 
         n_iter steps of gradient descent of matrix X.
@@ -215,7 +230,7 @@ class trmf:
             self.X -= step * self._grad_X()
 
 
-    def _update_W(self, step, n_iter):
+    def _update_W(self, step, n_iter=1):
         """Gradient descent of matrix W.
 
         n_iter steps of gradient descent of matrix W.
@@ -252,7 +267,7 @@ class trmf:
             Returns self.
         """
 
-        return - 2 * np.dot(self.Y - np.dot(self.F, self.X), self.X.T) + 2 * self.lambda_f * self.F
+        return - 2 * np.dot((self.Y - np.dot(self.F, self.X)) * self.mask, self.X.T) + 2 * self.lambda_f * self.F
 
 
     def _grad_X(self):
@@ -279,7 +294,7 @@ class trmf:
             z_2[:, -lag:] = 0.
 
         grad_T_x = z_1 + z_2
-        return - 2 * np.dot(self.F.T, self.Y - np.dot(self.F, self.X)) + self.lambda_x * grad_T_x + self.eta * self.X
+        return - 2 * np.dot(self.F.T, self.mask * (self.Y - np.dot(self.F, self.X))) + self.lambda_x * grad_T_x + self.eta * self.X
 
 
     def _grad_W(self):

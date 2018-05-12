@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 
 class SyntheticData:
     """Time series synthesizer.
@@ -38,8 +38,8 @@ class SyntheticData:
 
     """
 
-    def __init__(self, N, T, K, lags, sigma_w, sigma_x, sigma_t):
-
+    def __init__(self, N, T, K, lags, sigma_w, sigma_x, sigma_t, seed=100):
+        self.seed = seed
         self.N = N
         self.T = T
         self.K = K
@@ -55,6 +55,7 @@ class SyntheticData:
 
 
     def synthesize_data(self):
+        random.seed(self.seed)
         self.generate_W()
         self.generate_F()
         self.generate_X()
